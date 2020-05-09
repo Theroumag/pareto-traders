@@ -1,4 +1,4 @@
-import random
+import random, math
 from matplotlib import pyplot as plt
 
 plt.ion()
@@ -18,13 +18,22 @@ def generate_traders(trader_amount, trader_balance):
 def faceoff(traders=traders):
     for trader in traders:
         if trader.balance >= 1:
-            trader.balance -= 1
-            while True:
-                receiver = random.choice(traders)
-                if receiver.balance >= 1:
-                    receiver.balance += 1
-                    break
-                    
+            if wealth_oppurtunity(trader, 80):
+                pass
+            else:
+                trader.balance -= 1
+                while True:
+                    receiver = random.choice(traders)
+                    if receiver.balance >= 1:
+                        receiver.balance += 1
+                        break
+
+def wealth_oppurtunity(trader: Trader, chance: int):
+    floor = 0 + trader.balance
+    roll = random.randint(floor, 100)
+    return (roll >= chance)
+
+
 def generations(repetitons):
     for generation in range(repetitons):
         data = {}
@@ -35,7 +44,8 @@ def generations(repetitons):
                 data[t.balance] = 1
             else:
                 data[t.balance] += 1
-                
+        print(data)
+
         plt.cla()
         plt.bar(data.keys(), data.values(), width=0.8, bottom=None, align='center')
         plt.pause(0.1)
